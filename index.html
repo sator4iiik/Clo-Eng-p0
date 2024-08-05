@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Лайк страничка</title>
+    <style>
+        body {
+            text-align: center;
+            background-color: #ffc0cb;
+            font-family: Arial, sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+        img {
+            max-width: 100%;
+            height: 90vh;
+        }
+        .like-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            z-index: 1;
+            position: relative;
+        }
+        .like-button {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 0;
+        }
+        .like-button img {
+            width: 50px;
+            height: 50px;
+        }
+        .like-count {
+            margin-left: 10px;
+            font-size: 18px;
+            color: #ff69b4;
+        }
+        .like-button.active img {
+            filter: grayscale(0%);
+        }
+        .like-button img {
+            filter: grayscale(100%);
+        }
+        .diamond {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #ffeff1;
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            animation: sparkle 1.5s infinite;
+        }
+        @keyframes sparkle {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.5);
+                opacity: 0.5;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="like-container">
+        <button class="like-button" onclick="addLike()">
+            <img src="https://img.icons8.com/emoji/48/000000/white-heart.png" alt="Like">
+        </button>
+        <div class="like-count" id="likeCount">Лайков: 0</div>
+    </div>
+    <img src="./pic.jpg" alt="Image">
+
+    <script>
+        function createDiamonds() {
+            for (let i = 0; i < 50; i++) {
+                const diamond = document.createElement('div');
+                diamond.className = 'diamond';
+                diamond.style.top = Math.random() * 100 + 'vh';
+                diamond.style.left = Math.random() * 100 + 'vw';
+                diamond.style.animationDelay = Math.random() * 5 + 's';
+                document.body.appendChild(diamond);
+            }
+        }
+
+        let likes = 0;
+        let liked = false;
+
+        function addLike() {
+            if (!liked) {
+                likes++;
+                liked = true;
+                document.querySelector('.like-button').classList.add('active');
+                document.getElementById('likeCount').innerText = 'Лайков: ' + likes;
+                localStorage.setItem('likeCount', likes);
+                sessionStorage.setItem('liked', liked);
+            }
+        }
+
+        window.onload = function() {
+            const savedLikes = localStorage.getItem('likeCount');
+            const sessionLiked = sessionStorage.getItem('liked');
+            if (savedLikes) {
+                likes = parseInt(savedLikes);
+                document.getElementById('likeCount').innerText = 'Лайков: ' + likes;
+            }
+            if (sessionLiked) {
+                liked = sessionLiked === 'true';
+                if (liked) {
+                    document.querySelector('.like-button').classList.add('active');
+                }
+            }
+            createDiamonds();
+        }
+    </script>
+</body>
+</html>
